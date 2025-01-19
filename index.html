@@ -28,16 +28,27 @@
       document.getElementById("openLinkButton").disabled = false;
     }
 
-    // Function to open the generated link in a new tab
+    // Function to open both links and check the background link
     function openLink() {
       if (generatedLink) {
-        // Open the new link in a new tab
-        window.open(generatedLink, "_blank");
+        // Open the generated link in a new tab
+        const newTab = window.open(generatedLink, "_blank");
 
-        // Reload the first link in the background (iframe)
-        const iframe = document.getElementById("backgroundIframe");
-        iframe.src = document.getElementById("firstLink").value;
-        iframe.style.display = "block"; // Show the iframe
+        // Open the first link in the background in a new tab
+        const firstLink = document.getElementById("firstLink").value;
+        if (firstLink) {
+          const backgroundTab = window.open(firstLink, "_blank"); // Opens in a new tab
+          
+          // Wait for the background tab to load and confirm it's working
+          setTimeout(function() {
+            // Check if the background tab is still open and working
+            if (backgroundTab && !backgroundTab.closed) {
+              alert("Both the new link and the background link are working!");
+            } else {
+              alert("Background link failed to open.");
+            }
+          }, 2000); // Wait 2 seconds for the background link to load
+        }
       }
     }
   </script>
@@ -46,12 +57,10 @@
       font-family: Arial, sans-serif;
       padding: 20px;
     }
-    #backgroundIframe {
-      display: none; /* Initially hidden */
-      width: 100%;
-      height: 500px;
-      border: none;
-      margin-top: 20px;
+    #openLinkButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -70,8 +79,5 @@
     <!-- The second button will open the generated link -->
     <button id="openLinkButton" onclick="openLink()" disabled>Open Link</button>
   </div>
-
-  <!-- Iframe to reload the first link -->
-  <iframe id="backgroundIframe"></iframe>
 </body>
 </html>
